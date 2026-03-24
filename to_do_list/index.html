@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elegant To-Do List</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+    <h1>📝 My Tasks</h1>
+    <p class="subtitle">Stay organized and productive</p>
+
+    <div class="input-box">
+        <input type="text" id="taskInput" placeholder="What do you need to do?">
+        <input type="datetime-local" id="dueDate">
+        <button id="addBtn">Add</button>
+    </div>
+
+    <div class="filters">
+        <button onclick="setFilter('all')">All</button>
+        <button onclick="setFilter('completed')">Completed</button>
+        <button onclick="setFilter('pending')">Pending</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div class="footer">
+        <span id="taskCount"></span>
+        <button id="clearAll">Clear All</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
