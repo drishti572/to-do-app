@@ -9,50 +9,76 @@ let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let filter = "all";
 let dragIndex = null;
 
-/* Add Task */
+// ==========================
+// ADD TASK
+// ==========================
 addBtn.onclick = addTask;
 
 function addTask() {
     const text = taskInput.value.trim();
     const dueDate = dueDateInput.value;
 
-    if (!text) return;
+    if (!text) {
+        alert("⚠ Please enter a task");
+        return;
+    }
 
-    tasks.push({ text, completed: false, dueDate });
+    tasks.push({
+        text,
+        completed: false,
+        dueDate
+    });
+
     save();
     taskInput.value = "";
     dueDateInput.value = "";
+
     render();
 }
 
-/* Render */
+// ==========================
+// RENDER TASKS
+// ==========================
 function render() {
     taskList.innerHTML = "";
 
-    let filtered = tasks.filter(t => {
-        if (filter === "completed") return t.completed;
-        if (filter === "pending") return !t.completed;
+    let filteredTasks = tasks.filter(task => {
+        if (filter === "completed") return task.completed;
+        if (filter === "pending") return !task.completed;
         return true;
     });
 
-    filtered.forEach((task, i) => {
+    if (filteredTasks.length === 0) {
+        taskList.innerHTML = "<p style='text-align:center;'>✨ No tasks found</p>";
+        return;
+    }
+
+    filteredTasks.forEach((task, index) => {
         const li = document.createElement("li");
+        li.classList.add("task-item");
         li.draggable = true;
 
-        li.ondragstart = () => dragIndex = i;
+        // Drag events
+        li.ondragstart = () => dragIndex = index;
         li.ondragover = e => e.preventDefault();
-        li.ondrop = () => swap(i);
+        li.ondrop = () => swap(index);
 
         const span = document.createElement("span");
-        span.innerHTML = `${task.text}<br><small>📅 ${task.dueDate || "No date"}</small>`;
+        span.innerHTML = `
+            ${task.text}
+            <br>
+            <small>📅 ${task.dueDate || "No date"}</small>
+        `;
+
         if (task.completed) span.classList.add("completed");
-        span.onclick = () => toggle(i);
 
-        const del = document.createElement("button");
-        del.textContent = "✖";
-        del.onclick = () => remove(i);
+        span.onclick = () => toggle(index);
 
-        li.append(span, del);
+        const delBtn = document.createElement("button");
+        delBtn.innerHTML = "🗑";
+        delBtn.onclick = () => remove(index);
+
+        li.append(span, delBtn);
         taskList.appendChild(li);
 
         checkReminder(task);
@@ -61,25 +87,33 @@ function render() {
     updateCount();
 }
 
-/* Features */
-function toggle(i) {
-    tasks[i].completed = !tasks[i].completed;
-    save(); render();
+// ==========================
+// FEATURES
+// ==========================
+function toggle(index) {
+    tasks[index].completed = !tasks[index].completed;
+    save();
+    render();
 }
 
-function remove(i) {
-    tasks.splice(i, 1);
-    save(); render();
+function remove(index) {
+    tasks.splice(index, 1);
+    save();
+    render();
 }
 
-function swap(i) {
-    [tasks[i], tasks[dragIndex]] = [tasks[dragIndex], tasks[i]];
-    save(); render();
+function swap(index) {
+    [tasks[index], tasks[dragIndex]] = [tasks[dragIndex], tasks[index]];
+    save();
+    render();
 }
 
 function clearAll() {
-    tasks = [];
-    save(); render();
+    if (confirm("Delete all tasks?")) {
+        tasks = [];
+        save();
+        render();
+    }
 }
 
 clearAllBtn.onclick = clearAll;
@@ -89,17 +123,25 @@ function setFilter(type) {
     render();
 }
 
+// ==========================
+// STORAGE
+// ==========================
+function save() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// ==========================
+// TASK COUNT
+// ==========================
 function updateCount() {
     const total = tasks.length;
     const done = tasks.filter(t => t.completed).length;
     taskCount.textContent = `Total: ${total} | Done: ${done}`;
 }
 
-function save() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-/* 🔔 Reminder */
+// ==========================
+// REMINDER SYSTEM
+// ==========================
 function checkReminder(task) {
     if (!task.dueDate) return;
 
@@ -114,12 +156,14 @@ function checkReminder(task) {
     }
 }
 
-/* 🎬 Auto Background (FIXED) */
+// ==========================
+// BACKGROUND ROTATION
+// ==========================
 const backgrounds = [
     "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=1600",
-    "https://media.istockphoto.com/id/1355861741/photo/father-and-son-having-fun-while-playing-with-ball-at-park.webp?a=1&b=1&s=612x612&w=0&k=20&c=Z-Hc5mK_z8JHihooHYrencHOPXpg30bW7rnbeRFw3Yc=",
-    "https://images.unsplash.com/photo-1592861956120-e524fc739696?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWF0aW5nfGVufDB8fDB8fHww",
-    "https://images.unsplash.com/photo-1619982998302-752bc70afcff?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZGFuY2luZ3xlbnwwfHwwfHx8MA%3D%3D"
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600",
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600",
+    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600"
 ];
 
 let bgIndex = 0;
@@ -129,8 +173,8 @@ function changeBackground() {
     bgIndex = (bgIndex + 1) % backgrounds.length;
 }
 
-/* ✅ RUN ONCE ONLY */
 changeBackground();
 setInterval(changeBackground, 5000);
 
+// INITIAL RENDER
 render();
