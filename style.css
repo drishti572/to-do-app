@@ -1,3 +1,4 @@
+/* GLOBAL */
 * {
     margin: 0;
     padding: 0;
@@ -5,7 +6,7 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* 🌄 Background */
+/* BACKGROUND */
 body {
     min-height: 100vh;
     display: flex;
@@ -14,11 +15,10 @@ body {
 
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-    transition: background-image 1s ease-in-out;
+    transition: background 1s ease-in-out;
 }
 
-/* 🌑 Overlay */
+/* OVERLAY */
 body::before {
     content: "";
     position: fixed;
@@ -28,58 +28,44 @@ body::before {
     z-index: -1;
 }
 
-/* 💎 Card */
+/* APP CARD */
 .app {
     width: 450px;
     max-width: 95%;
     padding: 30px;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-    z-index: 1;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Text */
-h1 {
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+/* HEADINGS */
+h1, .subtitle {
     text-align: center;
 }
 
-.subtitle {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Input */
+/* INPUT BOX */
 .input-box {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 15px;
-}
-
-#taskInput {
-    flex: 1 1 100%;
-}
-
-#dueDate {
-    flex: 1;
-    min-width: 140px;
+    margin: 20px 0;
 }
 
 input {
+    flex: 1;
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid #ddd;
-    transition: 0.3s;
+    border: 1px solid #ccc;
 }
 
-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 10px rgba(102,126,234,0.5);
-}
-
-/* Buttons */
+/* BUTTONS */
 button {
     padding: 10px;
     border-radius: 10px;
@@ -91,10 +77,10 @@ button {
 }
 
 button:hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: scale(1.05);
 }
 
-/* Filters */
+/* FILTERS */
 .filters {
     display: flex;
     margin-bottom: 15px;
@@ -105,7 +91,7 @@ button:hover {
     margin: 2px;
 }
 
-/* Tasks */
+/* TASK LIST */
 li {
     background: white;
     padding: 10px;
@@ -113,12 +99,11 @@ li {
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
-    cursor: grab;
     transition: 0.3s;
 }
 
 li:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .completed {
@@ -126,13 +111,20 @@ li:hover {
     color: gray;
 }
 
-li small {
-    font-size: 11px;
-    color: #777;
-}
-
-/* Footer */
+/* FOOTER */
 .footer {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 500px) {
+    .app {
+        padding: 20px;
+    }
+
+    input {
+        font-size: 14px;
+    }
 }
